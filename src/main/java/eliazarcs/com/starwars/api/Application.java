@@ -13,7 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import eliazarcs.com.starwars.api.service.StarWarsService;
 import eliazarcs.com.starwars.api.util.StarWarsUtil;
 
-@SpringBootApplication(exclude={SecurityAutoConfiguration.class})
+//@SpringBootApplication(exclude={SecurityAutoConfiguration.class})
+@SpringBootApplication()
 public class Application implements ApplicationRunner  {
 	@Autowired
 	private StarWarsService service;
@@ -30,9 +31,4 @@ public class Application implements ApplicationRunner  {
 		service.saveDefaultUsers();
 		StarWarsUtil.appContext = ctx;
 	}
-
-//	@Bean
-//	public BCryptPasswordEncoder passwordEncoder() {
-//		return new BCryptPasswordEncoder();
-//	};
 }
