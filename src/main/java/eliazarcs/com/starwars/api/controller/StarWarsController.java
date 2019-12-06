@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import eliazarcs.com.starwars.api.dto.ApiResponse;
+import eliazarcs.com.starwars.api.dto.MovieCharacter;
+import eliazarcs.com.starwars.api.dto.Specie;
 import eliazarcs.com.starwars.api.model.Profile;
 import eliazarcs.com.starwars.api.model.User;
 import eliazarcs.com.starwars.api.service.StarWarsService;
@@ -27,12 +29,7 @@ import eliazarcs.com.starwars.api.service.StarWarsService;
 @RestController
 public class StarWarsController {
 	@Autowired
-	private StarWarsService service;
-
-	@PostMapping("/users")
-	ResponseEntity<ApiResponse<User>> addUser(@Valid @RequestBody User user) {
-		return ResponseEntity.ok(new ApiResponse<User>(HttpStatus.OK.value(), service.saveUser(user)));
-	}
+	private StarWarsService service;	
 
 	@GetMapping("/users")
 	ResponseEntity<ApiResponse<List<User>>> listUsers() {
@@ -60,5 +57,15 @@ public class StarWarsController {
 			errors.put(fieldName, errorMessage);
 		});
 		return errors;
+	}
+	
+	@GetMapping("/character/{id}")
+	ResponseEntity<ApiResponse<MovieCharacter>> listCharacter(@PathVariable(value="id") Integer id) {
+		return ResponseEntity.ok(new ApiResponse<MovieCharacter>(HttpStatus.OK.value(), service.findMovieCharacterById(id, true)));
+	}
+	
+	@GetMapping("/human-specie")
+	ResponseEntity<ApiResponse<Specie>> listHumanMovieCharacter() {
+		return ResponseEntity.ok(new ApiResponse<Specie>(HttpStatus.OK.value(), service.findHumanMovieCharacter()));
 	}
 }

@@ -40,7 +40,8 @@ public class StarWarsSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.csrf().disable().authorizeRequests().antMatchers("/authentication").permitAll()
+		httpSecurity.csrf().disable().authorizeRequests()
+				.antMatchers("/authentication").permitAll()
 				.antMatchers(HttpMethod.GET, "/users").hasAuthority("Administrador")
 				.antMatchers(HttpMethod.GET, "/profiles").hasAuthority("Administrador").anyRequest().authenticated()
 				.and().exceptionHandling().accessDeniedHandler(exceptionHandler).and()
