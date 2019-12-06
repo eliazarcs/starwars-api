@@ -11,4 +11,5 @@ import eliazarcs.com.starwars.api.model.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 	List<User> findAllByOrderByNameAsc();
+	User findByCpf(String cpf);
 }

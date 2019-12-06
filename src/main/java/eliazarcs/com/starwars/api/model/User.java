@@ -20,6 +20,8 @@ public class User {
 	private Profile profile;
 	@NotBlank(message = "O atributo CPF é obrigatório")
 	private String cpf;
+	@NotBlank(message = "O atributo Senha é obrigatório")
+	private String pwd;
 
 	public User() {
 		super();
@@ -30,6 +32,14 @@ public class User {
 		this.name = name;
 		this.profile = profile;
 		this.cpf = cpf;
+	}
+
+	public User(String name, Profile profile, String cpf, String pwd) {
+		super();
+		this.name = name;
+		this.profile = profile;
+		this.cpf = cpf;
+		this.pwd = pwd;
 	}
 
 	public Integer getId() {
@@ -62,6 +72,14 @@ public class User {
 
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
+	}
+
+	public String getPwd() {
+		return pwd;
+	}
+
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
 	}
 
 }
