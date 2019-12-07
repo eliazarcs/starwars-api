@@ -1,7 +1,5 @@
 package eliazarcs.com.starwars.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class Movie {
 	private Integer id;
 	private String name;

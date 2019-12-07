@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,7 +22,6 @@ import eliazarcs.com.starwars.api.dto.Specie;
 import eliazarcs.com.starwars.api.model.Profile;
 import eliazarcs.com.starwars.api.model.User;
 import eliazarcs.com.starwars.api.service.StarWarsService;
-import springfox.documentation.builders.ResponseMessageBuilder;
 
 @RestController
 public class StarWarsController {
