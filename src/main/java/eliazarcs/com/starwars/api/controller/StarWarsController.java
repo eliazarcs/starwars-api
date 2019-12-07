@@ -23,6 +23,7 @@ import eliazarcs.com.starwars.api.dto.Specie;
 import eliazarcs.com.starwars.api.model.Profile;
 import eliazarcs.com.starwars.api.model.User;
 import eliazarcs.com.starwars.api.service.StarWarsService;
+import springfox.documentation.builders.ResponseMessageBuilder;
 
 @RestController
 public class StarWarsController {
@@ -59,7 +60,12 @@ public class StarWarsController {
 	
 	@RequestMapping(path="/character/{id}", method=RequestMethod.GET, produces= {"application/json"})
 	ResponseEntity<ApiResponse<MovieCharacter>> listCharacter(@PathVariable(value="id") Integer id) {
-		return ResponseEntity.ok(new ApiResponse<MovieCharacter>(HttpStatus.OK.value(), service.findMovieCharacterById(id, true)));
+		MovieCharacter character = service.findMovieCharacterById(id, true);
+		if(character != null) {
+			return ResponseEntity.ok(new ApiResponse<MovieCharacter>(HttpStatus.OK.value(), character));
+		}else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 	
 	@RequestMapping(path="/human-specie", method=RequestMethod.GET, produces= {"application/json"})

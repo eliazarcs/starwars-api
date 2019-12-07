@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -87,7 +88,7 @@ public class StarWarsService implements UserDetailsService {
 	public void saveDefaultUsers() {
 		List<Profile> pfs = profileRepo.findAllByOrderByNameAsc();
 		AtomicInteger count = new AtomicInteger(0);
-		final String[] names = new String[] { "Vader", "Yoda" };
+		final String[] names = new String[] { "Yoda", "Vader" };
 		pfs.stream().forEach(pf -> {
 			final User newUser = new User(names[count.get()], pf, "000.000.000-0" + count.incrementAndGet(),
 					pwdEncoder.encode("123"));
@@ -98,7 +99,7 @@ public class StarWarsService implements UserDetailsService {
 	public MovieCharacter findMovieCharacterById(Integer id, boolean requiredMovies) {
 		if (id != null) {
 			ResponseEntity<String> response = accessSWAPI(urlPeople + id);
-			if (response.getStatusCode() == HttpStatus.OK) {
+			if (response != null && response.getStatusCode() == HttpStatus.OK) {
 				JsonNode root;
 				MovieCharacter character = new MovieCharacter();
 				try {
@@ -125,6 +126,25 @@ public class StarWarsService implements UserDetailsService {
 		return null;
 	}
 
+	public Specie findHumanMovieCharacter() {
+		ResponseEntity<String> response = accessSWAPI(urlHumanSpecies);
+		if (response.getStatusCode() == HttpStatus.OK) {
+			JsonNode root;
+			Specie specie = new Specie();
+			try {
+				root = mapper.readTree(response.getBody());
+				specie.setName(root.get("name").asText());
+				specie.setWeightAverage(Float.valueOf(root.get("average_height").asText()));
+				getPeopleFromSpecie(root, specie);
+				return specie;
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
+	
 	private void getCharacterMovies(JsonNode root, final MovieCharacter character) {
 		Integer idMovie;
 		Movie movie;
@@ -144,8 +164,12 @@ public class StarWarsService implements UserDetailsService {
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
 		RestTemplate restTemplate = new RestTemplate();
 		HttpEntity<String> entity = new HttpEntity<String>(headers);
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-		return response;
+		try {
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+			return response;
+		}catch (HttpClientErrorException e) {
+			return null;
+		}
 	}
 
 	private Movie findMovieById(Integer id) {
@@ -165,24 +189,6 @@ public class StarWarsService implements UserDetailsService {
 		List<T> list = new ArrayList<T>();
 		it.forEach(list::add);
 		return list;
-	}
-
-	public Specie findHumanMovieCharacter() {
-		ResponseEntity<String> response = accessSWAPI(urlHumanSpecies);
-		if (response.getStatusCode() == HttpStatus.OK) {
-			JsonNode root;
-			Specie specie = new Specie();
-			try {
-				root = mapper.readTree(response.getBody());
-				specie.setName(root.get("name").asText());
-				specie.setWeightAverage(Float.valueOf(root.get("average_height").asText()));
-				getPeopleFromSpecie(root, specie);
-				return specie;
-			} catch (JsonProcessingException e) {
-				e.printStackTrace();
-			}
-		}
-		return null;
 	}
 
 	private void getPeopleFromSpecie(JsonNode root, final Specie specie) {
